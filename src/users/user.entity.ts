@@ -1,11 +1,14 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Review } from '../reviews/review.entity';
 
 @Entity()
 export class User {
@@ -35,4 +38,7 @@ export class User {
     nullable: false,
   })
   lastName: string;
+
+  @OneToMany(() => Review, (review) => review.id)
+  reviews: Review[];
 }

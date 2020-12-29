@@ -16,6 +16,10 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
+  getOne(id: string) {
+    return this.usersRepository.findOne(id);
+  }
+
   async create(createUserDto: CreateUserDto) {
     const user = new User();
     const { userName, password, email, firstName, lastName } = createUserDto;
@@ -42,5 +46,9 @@ export class UsersService {
     user.firstName = firstName;
     user.lastName = lastName;
     return this.usersRepository.update(id, user);
+  }
+
+  delete(id: string) {
+    return this.usersRepository.delete(id);
   }
 }

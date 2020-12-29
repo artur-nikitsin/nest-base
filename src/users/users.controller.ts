@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -13,7 +14,6 @@ import { UserValidationPipe } from './user.validation.pipe';
 import { CreateUserSchema } from './schemas/create-user.validation.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateResult } from 'typeorm';
-import { UpdateUserSchema } from './schemas/update-user.validation.schema';
 
 @Controller('users')
 export class UsersController {
@@ -22,6 +22,11 @@ export class UsersController {
   @Get()
   getAll() {
     return this.usersService.getAll();
+  }
+
+  @Get(':id')
+  getOne(id: string) {
+    return this.usersService.getOne(id);
   }
 
   @Post()
@@ -36,5 +41,10 @@ export class UsersController {
     @Param('id') id: string,
   ): Promise<UpdateResult> {
     return this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  delete(id: string) {
+    return this.usersService.delete(id);
   }
 }
