@@ -4,6 +4,8 @@ import { Repository, UpdateResult } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Role } from '../roles/roles.entity';
+import { RoleEnum } from '../roles/enums/role.enum';
 
 export type UserT = any;
 
@@ -12,10 +14,12 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly rolesRepository: Repository<Role>,
   ) {}
 
   ////////////////////TEMP
-  private readonly users = [
+  /* private readonly users = [
     {
       userId: 1,
       username: 'john',
@@ -30,28 +34,32 @@ export class UsersService {
 
   async findOne(username: string): Promise<UserT | undefined> {
     return this.users.find((user) => user.username === username);
-  }
+  }*/
+
   ////////////////////////////
 
-  getAll() {
+  async getAll() {
     return this.usersRepository.find();
   }
 
-  getOne(id: string) {
+  async getOne(id: string) {
     return this.usersRepository.findOne(id);
   }
 
+  async getOneByUserName(userName: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ userName: userName });
+  }
+
   async create(createUserDto: CreateUserDto) {
-    const user = new User();
-    const { userName, password, email, firstName, lastName } = createUserDto;
+    const roles = await this.rolesRepository.find();
+    const userRole = roles.find(
+      (role) => role.role.toLocaleLowerCase() === 'user',
+    );
 
-    user.userName = userName;
-    user.password = password;
-    user.email = email;
-    user.firstName = firstName;
-    user.lastName = lastName;
-
-    return this.usersRepository.save(user);
+    const user = { ...new User(), ...createUserDto };
+    user.password = '12345';
+    user.roles = [userRole];
+    return await this.usersRepository.save(user);
   }
 
   async update(

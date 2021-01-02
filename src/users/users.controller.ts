@@ -14,11 +14,13 @@ import { UserValidationPipe } from './user.validation.pipe';
 import { CreateUserSchema } from './schemas/create-user.validation.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateResult } from 'typeorm';
+import { Public } from '../common/decorators/is-public.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @Public()
   @Get()
   getAll() {
     return this.usersService.getAll();

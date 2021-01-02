@@ -6,9 +6,11 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Review } from '../reviews/review.entity';
+import { Role } from '../roles/roles.entity';
 
 @Entity()
 export class User {
@@ -38,6 +40,10 @@ export class User {
     nullable: false,
   })
   lastName: string;
+
+  @ManyToOne(() => Role)
+  @JoinColumn()
+  roles: Role[];
 
   @OneToMany(() => Review, (review) => review.id)
   reviews: Review[];

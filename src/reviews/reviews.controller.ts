@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { Roles } from '../roles/roles.decorator';
+import { RoleEnum } from '../roles/enums/role.enum';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -25,6 +27,7 @@ export class ReviewsController {
   }
 
   @Post()
+  @Roles(RoleEnum.Admin)
   create(@Body() createReviewDto: CreateReviewDto) {
     return this.reviewsService.create(createReviewDto);
   }
