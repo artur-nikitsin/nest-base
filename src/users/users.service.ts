@@ -5,9 +5,7 @@ import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from '../roles/roles.entity';
-import { RoleEnum } from '../roles/enums/role.enum';
-
-export type UserT = any;
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -17,26 +15,6 @@ export class UsersService {
     @InjectRepository(Role)
     private readonly rolesRepository: Repository<Role>,
   ) {}
-
-  ////////////////////TEMP
-  /* private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
-
-  async findOne(username: string): Promise<UserT | undefined> {
-    return this.users.find((user) => user.username === username);
-  }*/
-
-  ////////////////////////////
 
   async getAll() {
     return this.usersRepository.find();
@@ -50,15 +28,26 @@ export class UsersService {
     return this.usersRepository.findOne({ userName: userName });
   }
 
+  async getUserWithRoles(userName: string) {
+    return await this.usersRepository.findOne({
+      relations: ['roles'],
+      where: { userName: userName },
+    });
+  }
+
   async create(createUserDto: CreateUserDto) {
-    const roles = await this.rolesRepository.find();
-    const userRole = roles.find(
-      (role) => role.role.toLocaleLowerCase() === 'user',
-    );
+    const roles: Role[] = createUserDto.roles;
+    let userRoles: Role[] = [];
+
+    for (const role of roles) {
+      const newRole = new Role();
+      newRole.role = `${role}`;
+      userRoles = [...userRoles, await this.rolesRepository.save(newRole)];
+    }
 
     const user = { ...new User(), ...createUserDto };
-    user.password = '12345';
-    user.roles = [userRole];
+    user.password = await bcrypt.hash(createUserDto.password, 10);
+    user.roles = userRoles;
     return await this.usersRepository.save(user);
   }
 

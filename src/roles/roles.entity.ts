@@ -8,14 +8,12 @@ import {
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../users/user.entity';
 
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => User)
-  @JoinTable()
+  @Column()
   role: string;
 }

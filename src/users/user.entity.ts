@@ -12,7 +12,7 @@ import {
 import { Review } from '../reviews/review.entity';
 import { Role } from '../roles/roles.entity';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -41,8 +41,8 @@ export class User {
   })
   lastName: string;
 
-  @ManyToOne(() => Role)
-  @JoinColumn()
+  @ManyToMany(() => Role)
+  @JoinTable()
   roles: Role[];
 
   @OneToMany(() => Review, (review) => review.id)
