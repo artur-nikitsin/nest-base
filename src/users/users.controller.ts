@@ -15,7 +15,6 @@ import { UserValidationPipe } from './user.validation.pipe';
 import { CreateUserSchema } from './schemas/create-user.validation.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateResult } from 'typeorm';
-import { Public } from '../common/decorators/is-public.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../roles/roles.decorator';
@@ -29,6 +28,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleEnum.Admin)
   getAll() {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@get');
     return this.usersService.getAll();
   }
 

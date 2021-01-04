@@ -13,7 +13,6 @@ export class AuthService {
   async validateUser(userName: string, password: string): Promise<any> {
     try {
       const user = await this.userService.getUserWithRoles(userName);
-      console.log('UserWithRole', user);
 
       if (user === undefined) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -41,7 +40,6 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log('@user2', user);
     const payload = {
       userName: user.userName,
       sub: user.id,
